@@ -10,7 +10,6 @@
     "url": "https://github.com/melgrigsby/MMM-RabbitAir.git"
   },
   "dependencies": {
-    "node-rabbitair": "https://github.com/melgrigsby/node-rabbitair",
-    "request": "^2.88.2"
+    "node-rabbitair": "https://github.com/melgrigsby/node-rabbitair"
   }
 }

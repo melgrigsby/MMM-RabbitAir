@@ -1,0 +1,16 @@
+{
+  "name": "MMM-RabbitAir",
+  "description": "Connect to RabbitAir and collect sensor data",
+  "author": {
+    "name": "Melissa Grigsby",
+    "email": "mel.h.grigsby@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/melgrigsby/MMM-RabbitAir.git"
+  },
+  "dependencies": {
+    "node-rabbitair": "https://github.com/melgrigsby/node-rabbitair",
+    "request": "^2.88.2"
+  }
+}

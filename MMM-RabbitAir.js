@@ -11,10 +11,11 @@ Module.register('MMM-RabbitAir',{
   },
 
   start() {
+    console.log('starting rabbitair module.......');
     Log.info(`Starting module: ${this.name}`);
     this.sendSocketNotification('RABBITAIR_CONFIG', this.config);
     Log.info(`${this.name} SENT RABBITAIR_CONFIG`);
-    sensorData = {}; 
+    //sensorData = {}; 
   },
 
   getStyles: function() {
@@ -23,10 +24,11 @@ Module.register('MMM-RabbitAir',{
 
   // Populate list of devices received from node_helper
   socketNotificationReceived: function(notification, payload) {
+    let sensorData;
     if (notification === 'SENSOR_DATA') {
+      console.log('*****DATA RECEIVED*****');
       Log.info(`${this.name} RECEIVED SENSOR DATA`);
-      this.sensorData = payload
-      })
+      this.sensorData = payload;
     }
     this.updateDom();
   },
@@ -41,7 +43,8 @@ Module.register('MMM-RabbitAir',{
     let row = document.createElement('tr');
     let cell = documenet.createElement('td');
     let sensors = document.createElement('span');
-    sensors.textContent = JSON.stringify(this.sensorData);
+    //sensors.textContent = JSON.stringify(this.sensorData);
+    sensors.textContent = 'testing';
     cell.appendChild(sensors);
     row.appendChild(cell);
     table.appendChild(row);

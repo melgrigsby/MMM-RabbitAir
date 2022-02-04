@@ -6,7 +6,7 @@
 //
 
 const NodeHelper = require('node_helper');
-const RabbitAir = require('node-rabbitair'); 
+var connectToAws = require('node-rabbitair'); 
 
 module.exports = NodeHelper.create({
 
@@ -16,6 +16,7 @@ module.exports = NodeHelper.create({
  
   // Receive defaults from MMM-RabbitAir.js
   socketNotificationReceived(notification, payload) {
+     console.log('RABBIT AIR RECEIVED CONFIG');
      if (notification === 'RABBITAIR_CONFIG') {
          console.log(`NOTIFICATION RECEIVED FROM ${this.name}`);
          this.getSensorData(payload);
@@ -24,27 +25,10 @@ module.exports = NodeHelper.create({
 
   // Get sensor data
   getSensorData(payload) {
-    stuff = RabbitAir.connectToAWS(payload.username, payload.password)
+    stuff = connectToAws(payload.username, payload.password);
     console.log(stuff);
     this.sendSocketNotification('SENSOR_DATA', stuff);
+    console.log('RABBIT AIR DATA SENT AS SOCKET NOTIFICATION');
   }
-
-  // Use node-alarm-dot-com module to login to Alarm.com and pull a list
-  // of all sensors and their attributes, then send it back to MMM-Frontpoint.js
-  //getDevices(payload) {
-  //  this.config = payload;
-  //  const nodeADC = require('node-alarm-dot-com'); 
-  //  nodeADC
-  //    .login(this.config.username, this.config.password, this.config.mfaCookie)
-  //    .then(res => nodeADC.getCurrentState(res.systems[0], res))
-  //    .then(res => {
-  //       const mySensors = res.sensors
-  //       this.sendSocketNotification('ADC_DEVICES', mySensors)
-  //       console.log(`ADC_DEVICES SENT TO ${this.name}`)
-  //    })
-  //    .catch(err => {
-  //       console.error(err)
-  //    })
-  //}
 
 });

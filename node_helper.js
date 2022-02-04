@@ -26,7 +26,7 @@ module.exports = NodeHelper.create({
   // Get sensor data
   getSensorData(payload) {
     stuff = connectToAws(payload.username, payload.password);
-    console.log(stuff);
+    console.log(this.stuff);
     this.sendSocketNotification('SENSOR_DATA', stuff);
     console.log('RABBIT AIR DATA SENT AS SOCKET NOTIFICATION');
   }

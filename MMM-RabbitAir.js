@@ -5,50 +5,79 @@
 
 
 Module.register('MMM-RabbitAir',{
-  defaults: {
-    username: 'bgrigsby2004@gmail.com',
-    password: 'hCj8BO6817G0',
-  },
+	defaults: {
+    		username: '',
+    		password: '',
+  	},
 
-  start() {
-    console.log('starting rabbitair module.......');
-    Log.info(`Starting module: ${this.name}`);
-    this.sendSocketNotification('RABBITAIR_CONFIG', this.config);
-    Log.info(`${this.name} SENT RABBITAIR_CONFIG`);
-    //sensorData = {}; 
-  },
+	sensors: {},
 
-  getStyles: function() {
-   return ['font-awesome.css'];
-  },
+  	start: function() {
+    		Log.info(`Starting module: ${this.name}`);
+    		this.sendSocketNotification('RABBITAIR_CONFIG', this.config);
+    		Log.info(`${this.name} SENT RABBITAIR_CONFIG`);
+  	},
 
-  // Populate list of devices received from node_helper
-  socketNotificationReceived: function(notification, payload) {
-    let sensorData;
-    if (notification === 'SENSOR_DATA') {
-      console.log('*****DATA RECEIVED*****');
-      Log.info(`${this.name} RECEIVED SENSOR DATA`);
-      this.sensorData = payload;
-    }
-    this.updateDom();
-  },
+  	getStyles: function() {
+   		return ['font-awesome.css'];
+  	},
+
+  	socketNotificationReceived(notification, payload) {
+		if (notification === 'RABBITAIR_DEVICES') {
+			let device_list = payload;
+			for (i = 0; i < device_list.length; i++) {
+				this.sensors[device_list[i].location_name] = {};
+			}
+			console.log(this.sensors);
+		}
+    		if (notification === 'SENSOR_DATA') {
+      			let sensorData = payload;
+			this.sensors[sensorData[0]] = sensorData[1];
+			this.updateDom();
+		}
+	},
   
-  // DOM wrapper
-  getDom()  {
-    var wrapper = document.createElement('div');
+  	// DOM wrapper
+  	getDom: function()  {
+    		var wrapper = document.createElement('div');
     
-    let table = document.createElement('table');
-    wrapper.appendChild(table);
-    
-    let row = document.createElement('tr');
-    let cell = documenet.createElement('td');
-    let sensors = document.createElement('span');
-    //sensors.textContent = JSON.stringify(this.sensorData);
-    sensors.textContent = 'testing';
-    cell.appendChild(sensors);
-    row.appendChild(cell);
-    table.appendChild(row);
+		Object.entries(this.sensors).forEach((entry) => {
+			let table = document.createElement('table');
+			table.style.margin = '20px 5px';
+                	table.style.textAlign = 'left';
+			wrapper.appendChild(table);
+			
+			const [key, value] = entry;
+			Object.entries(value).forEach((childEntry) => {
+				var newrow = document.createElement('tr');
+				const [key, value] = childEntry;
+	
+				var attributeTitle = document.createElement('td');
+				attributeTitle.innerHTML = key;
+				attributeTitle.className = 'xsmall bright';
+				newrow.appendChild(attributeTitle);
 
-    return wrapper;
-  }
+				var attributeData = document.createElement('td');
+
+				attributeData.className = 'xsmall';
+					
+       				if (Array.isArray(value)) {
+                                        var listAttributes = document.createElement('ul');
+                                        for (i = 0; i < value.length; i++) {
+                                                var listItem = document.createElement('li');
+                                                listItem.innerHTML = value[i];
+                                                listAttributes.appendChild(listItem);
+                                        };
+					attributeData.appendChild(listAttributes);
+                                } else {
+					attributeData.innerHTML = value;
+				}
+				
+				newrow.appendChild(attributeData);
+
+				table.appendChild(newrow);
+			});
+		});
+    		return wrapper;
+  	}
 });

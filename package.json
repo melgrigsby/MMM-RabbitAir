@@ -10,6 +10,9 @@
     "url": "https://github.com/melgrigsby/MMM-RabbitAir.git"
   },
   "dependencies": {
-    "node-rabbitair": "https://github.com/melgrigsby/node-rabbitair"
+    "aws-iot-device-sdk-js": "github:aws/aws-iot-device-sdk-js",
+    "axios": ">=0.25.0",
+    "form-data": "^4.0.0",
+    "moment": "^2.29.1"
   }
 }

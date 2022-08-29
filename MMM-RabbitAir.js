@@ -23,13 +23,6 @@ Module.register('MMM-RabbitAir',{
   	},
 
   	socketNotificationReceived(notification, payload) {
-		if (notification === 'RABBITAIR_DEVICES') {
-			let device_list = payload;
-			for (i = 0; i < device_list.length; i++) {
-				this.sensors[device_list[i].location_name] = {};
-			}
-			console.log(this.sensors);
-		}
     		if (notification === 'SENSOR_DATA') {
       			let sensorData = payload;
 			this.sensors[sensorData[0]] = sensorData[1];

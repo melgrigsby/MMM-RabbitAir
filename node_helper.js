@@ -15,20 +15,18 @@ module.exports = NodeHelper.create({
         	var self = this;
 		var config = payload;
         	console.log(self.name + ' Notification received: ' + notification + ' ' + payload);
-		
 	        if (notification === 'RABBITAIR_CONFIG') {
         		var config = payload;
             		console.log(self.name + ' RABBITAIR_CONFIG: ' + config);
                		await this.getRabbitairData(config.username, config.password)
                         	.then(res => {
-                                	console.log('testing');
-	                        });		
+                                	console.log('RabbitAir devices retrieved');
+	                        });
             		self.loaded = true;
         	};
     	},
 
  	getRabbitairData: async function(username, password) {
-                console.log('login to rabbitair');
 		let myToken;
 		await this.login(username, password)
 			.then(res => {
@@ -91,7 +89,6 @@ module.exports = NodeHelper.create({
 	},
 
 	startClient: function(deviceJSON) {
-		console.log('Client starting');
 		var self = this;
 		var thingShadows = awsIot.thingShadow({
            		host: 'au32ip2ri54us-ats.iot.us-east-1.amazonaws.com',
@@ -112,7 +109,6 @@ module.exports = NodeHelper.create({
 		};
 
 		thingShadows.on('connect', function() {
-           	     	console.log('connected');
                 	for (i = 0; i < subscribeTopics.length; i++) {
                         	thingShadows.subscribe(subscribeTopics[i]);
                         	console.log('Subscribed to '+subscribeTopics[i]);
@@ -121,14 +117,14 @@ module.exports = NodeHelper.create({
                 	const initialMessage = {
                         	"state": {
                                 	"desired": {
-                                	"con_state": 1
+                                		"con_state": 1
                                 	}
                         	}
                 	};
   
                 	for (i = 0; i < publishTopics.length; i++) {
                         	thingShadows.publish(publishTopics[i], JSON.stringify(initialMessage));
-                        	console.log('Published to '+publishTopics[i]);
+                        	console.log('Published to initial message to '+publishTopics[i]);
                 	};
         	});
 
@@ -174,7 +170,7 @@ module.exports = NodeHelper.create({
       		};
 
      		if (payload.quality === 1) {
-        		quality = "Bad";
+        		quality = "Poor";
      		};
      		if (payload.quality === 2) {
         		quality = "OK";
@@ -202,7 +198,7 @@ module.exports = NodeHelper.create({
        			odor = "OK";
      		};
      		if (payload.gas === 4) {
-       			odor = "Bad";
+       			odor = "Poor";
      		};
 
     		filterLifetime = moment.duration(payload.filter_life, "minutes");
@@ -218,8 +214,6 @@ module.exports = NodeHelper.create({
        			"Filter": filterMessage
 			}
 		);
-
-		//console.log(data);
     		this.sendSocketNotification('SENSOR_DATA', data);
 	}
 
